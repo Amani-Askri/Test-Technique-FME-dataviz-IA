@@ -1,28 +1,35 @@
 name: Tableau CI/CD
 
-# Déclencheur : à chaque push sur main
 on:
   push:
     branches:
       - main
+  workflow_dispatch: # Permet de lancer le workflow manuellement pour tester
 
 jobs:
   deploy:
     runs-on: windows-latest
 
     steps:
-      # 1️ Checkout du repo
+      # 1. Checkout du repo
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      # 2️ Installer PowerShell
-      - name: Setup PowerShell
-        uses: actions/setup-powershell@v2
+      # 2. Installer Python et Tabcmd (indispensable pour exécuter les commandes tabcmd)
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
 
-      # 3️ Exécuter le script de publication
+      - name: Install Tabcmd
+        run: pip install tabcmd
+
+      # 3. Exécuter le script de publication
       - name: Publish Tableau Workbook
         shell: pwsh
-        run: .\publish_tableau.ps1
+        run: |
+          # On s'assure que le script a accès aux secrets via des variables d'environnement
+          .\publish_tableau.ps1
         env:
           TABLEAU_SERVER: ${{ secrets.TABLEAU_SERVER }}
           TABLEAU_SITE: ${{ secrets.TABLEAU_SITE }}
