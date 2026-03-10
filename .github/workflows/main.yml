@@ -1,0 +1,30 @@
+name: Tableau CI/CD
+
+# Déclencheur : à chaque push sur main
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: windows-latest
+
+    steps:
+      # 1️ Checkout du repo
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      # 2️ Installer PowerShell
+      - name: Setup PowerShell
+        uses: actions/setup-powershell@v2
+
+      # 3️ Exécuter le script de publication
+      - name: Publish Tableau Workbook
+        shell: pwsh
+        run: .\publish_tableau.ps1
+        env:
+          TABLEAU_SERVER: ${{ secrets.TABLEAU_SERVER }}
+          TABLEAU_SITE: ${{ secrets.TABLEAU_SITE }}
+          TABLEAU_USER: ${{ secrets.TABLEAU_USER }}
+          TABLEAU_PASSWORD: ${{ secrets.TABLEAU_PASSWORD }}
