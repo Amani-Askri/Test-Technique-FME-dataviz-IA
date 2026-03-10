@@ -29,7 +29,7 @@ Write-Host "User: $Username"
 # 1. Connexion a Tableau Server
 # -------------------------------
 Write-Host "Connexion a Tableau Server..."
-tabcmd login --server $ServerUrl --site $SiteId --username $Username --password $Password 2>&1 | Write-Host
+tabcmd login -s $ServerUrl -t $SiteId -u $Username -p $Password 2>&1 | Write-Host
 
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Erreur de connexion (exit code: $LASTEXITCODE)."
