@@ -25,6 +25,7 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
+
 # -------------------------------
 # 2️ Publication du workbook
 # -------------------------------
@@ -35,6 +36,7 @@ if ($LASTEXITCODE -ne 0) {
     Write-Error "Erreur lors de la publication. Vérifie le chemin du fichier et le projet."
     exit 1
 }
+
 
 Write-Host "✔ Workbook publié avec succès : $WorkbookName dans le projet $ProjectName."
 
