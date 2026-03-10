@@ -1,28 +1,34 @@
 name: Tableau CI/CD
 
-# Déclencheur : à chaque push sur main
 on:
   push:
     branches:
       - main
+    paths:
+      - 'Tableau-CICD/**'
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: windows-latest
 
     steps:
-      # 1️ Checkout du repo
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      # 2️ Installer PowerShell
-      - name: Setup PowerShell
-        uses: actions/setup-powershell@v2
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
 
-      # 3️ Exécuter le script de publication
+      - name: Install Tabcmd
+        run: pip install tabcmd
+
       - name: Publish Tableau Workbook
         shell: pwsh
-        run: .\publish_tableau.ps1
+        run: |
+          cd Tableau-CICD
+          .\publish_tableau.ps1
         env:
           TABLEAU_SERVER: ${{ secrets.TABLEAU_SERVER }}
           TABLEAU_SITE: ${{ secrets.TABLEAU_SITE }}

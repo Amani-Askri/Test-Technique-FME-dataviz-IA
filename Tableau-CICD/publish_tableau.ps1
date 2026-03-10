@@ -1,49 +1,53 @@
 # -------------------------------
-# publish_tableau_local.ps1
+# publish_tableau.ps1
 # Script PowerShell pour publier un dashboard Tableau
 # -------------------------------
 
-#  Détails de connexion Tableau
-$ServerUrl = "https://prod-ch-a.online.tableau.com"
-$SiteId = "amaniaskri-f1a25b63ec"
-$Username = "amani.askri@iteam-univ.tn"
-$Password = "Amani.1998"
+# Connexion via variables d'environnement (GitHub Secrets)
+$ServerUrl = $env:TABLEAU_SERVER
+$SiteId    = $env:TABLEAU_SITE
+$Username  = $env:TABLEAU_USER
+$Password  = $env:TABLEAU_PASSWORD
 
-#  Détails du workbook
-$LocalWorkbookPath = "C:\Test-Technique-FME-dataviz-IA\Dashbord.twbx"
+# Chemin relatif du workbook (fonctionne en local et en CI)
+$LocalWorkbookPath = "Dashbord.twbx"
 $ProjectName = "TestTechnique"
 $WorkbookName = "Dashbord_FME_IA"
 
-# -------------------------------
-# 1 Connexion à Tableau Server
-# -------------------------------
-Write-Host "Connexion à Tableau Server..."
-tabcmd login -s $ServerUrl -t $SiteId -u $Username -p $Password
-
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "Erreur de connexion. Vérifie le serveur ou le mot de passe."
+# Validation des variables
+if (-not $ServerUrl -or -not $Username -or -not $Password) {
+    Write-Error "Variables d'environnement manquantes (TABLEAU_SERVER, TABLEAU_USER, TABLEAU_PASSWORD)."
     exit 1
 }
 
+# -------------------------------
+# 1. Connexion a Tableau Server
+# -------------------------------
+Write-Host "Connexion a Tableau Server..."
+tabcmd login -s $ServerUrl -t $SiteId -u $Username -p $Password
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "Erreur de connexion. Verifie le serveur ou le mot de passe."
+    exit 1
+}
 
 # -------------------------------
-# 2️ Publication du workbook
+# 2. Publication du workbook
 # -------------------------------
 Write-Host "Publication du workbook..."
 tabcmd publish $LocalWorkbookPath --project $ProjectName --name $WorkbookName --overwrite
 
 if ($LASTEXITCODE -ne 0) {
-    Write-Error "Erreur lors de la publication. Vérifie le chemin du fichier et le projet."
+    Write-Error "Erreur lors de la publication. Verifie le chemin du fichier et le projet."
     exit 1
 }
 
-
-Write-Host "✔ Workbook publié avec succès : $WorkbookName dans le projet $ProjectName."
+Write-Host "Workbook publie avec succes : $WorkbookName dans le projet $ProjectName."
 
 # -------------------------------
-# 3️ Déconnexion
+# 3. Deconnexion
 # -------------------------------
-Write-Host "Déconnexion du serveur..."
+Write-Host "Deconnexion du serveur..."
 tabcmd logout
 
-Write-Host "Script terminé."
+Write-Host "Script termine."
