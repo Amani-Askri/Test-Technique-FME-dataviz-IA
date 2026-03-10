@@ -3,27 +3,16 @@
 # Script PowerShell pour publier un dashboard Tableau
 # -------------------------------
 
-# Connexion via variables d'environnement (GitHub Secrets)
-$ServerUrl = $env:TABLEAU_SERVER
-$SiteId    = $env:TABLEAU_SITE
-$Username  = $env:TABLEAU_USER
-$Password  = $env:TABLEAU_PASSWORD
+$ServerUrl = "https://prod-ch-a.online.tableau.com"
+$SiteId    = "amaniaskri-f1a25b63ec"
+$Username  = "amani.askri@iteam-univ.tn"
+$Password  = "Amani.1998"
 
 # Chemin relatif du workbook (fonctionne en local et en CI)
 $LocalWorkbookPath = "Dashbord.twbx"
 $ProjectName = "TestTechnique"
 $WorkbookName = "Dashbord_FME_IA"
 
-# Validation des variables
-if (-not $ServerUrl -or -not $Username -or -not $Password) {
-    Write-Error "Variables d'environnement manquantes (TABLEAU_SERVER, TABLEAU_USER, TABLEAU_PASSWORD)."
-    exit 1
-}
-
-# Debug: afficher les valeurs (sans le mot de passe)
-Write-Host "Server: $ServerUrl"
-Write-Host "Site: $SiteId"
-Write-Host "User: $Username"
 
 # -------------------------------
 # 1. Connexion a Tableau Server
