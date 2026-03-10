@@ -4,18 +4,18 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch: # Permet de lancer le workflow manuellement pour tester
+  workflow_dispatch: # Permet de lancer le déploiement manuellement pour tester
 
 jobs:
   deploy:
     runs-on: windows-latest
 
     steps:
-      # 1. Checkout du repo
+      # 1. Récupération du code depuis le dépôt
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      # 2. Installer Python et Tabcmd (indispensable pour exécuter les commandes tabcmd)
+      # 2. Installation de Python et Tabcmd
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -24,11 +24,12 @@ jobs:
       - name: Install Tabcmd
         run: pip install tabcmd
 
-      # 3. Exécuter le script de publication
+      # 3. Exécution du script de publication
       - name: Publish Tableau Workbook
         shell: pwsh
         run: |
-          # On s'assure que le script a accès aux secrets via des variables d'environnement
+          # On entre dans le dossier où se trouve le script
+          cd Tableau-CICD
           .\publish_tableau.ps1
         env:
           TABLEAU_SERVER: ${{ secrets.TABLEAU_SERVER }}
