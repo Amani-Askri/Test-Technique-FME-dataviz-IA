@@ -20,14 +20,19 @@ if (-not $ServerUrl -or -not $Username -or -not $Password) {
     exit 1
 }
 
+# Debug: afficher les valeurs (sans le mot de passe)
+Write-Host "Server: $ServerUrl"
+Write-Host "Site: $SiteId"
+Write-Host "User: $Username"
+
 # -------------------------------
 # 1. Connexion a Tableau Server
 # -------------------------------
 Write-Host "Connexion a Tableau Server..."
-tabcmd login -s $ServerUrl -t $SiteId -u $Username -p $Password
+tabcmd login --server $ServerUrl --site $SiteId --username $Username --password $Password 2>&1 | Write-Host
 
 if ($LASTEXITCODE -ne 0) {
-    Write-Error "Erreur de connexion. Verifie le serveur ou le mot de passe."
+    Write-Error "Erreur de connexion (exit code: $LASTEXITCODE)."
     exit 1
 }
 
@@ -35,10 +40,10 @@ if ($LASTEXITCODE -ne 0) {
 # 2. Publication du workbook
 # -------------------------------
 Write-Host "Publication du workbook..."
-tabcmd publish $LocalWorkbookPath --project $ProjectName --name $WorkbookName --overwrite
+tabcmd publish $LocalWorkbookPath --project $ProjectName --name $WorkbookName --overwrite 2>&1 | Write-Host
 
 if ($LASTEXITCODE -ne 0) {
-    Write-Error "Erreur lors de la publication. Verifie le chemin du fichier et le projet."
+    Write-Error "Erreur lors de la publication (exit code: $LASTEXITCODE)."
     exit 1
 }
 
